@@ -1,1 +1,70 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("HumanoidRootPart")
 
+local distance = 2.8
+
+local isTeleportingA = false
+local isTeleportingD = false
+local isTeleportingW = false
+local isScriptRunning = false
+
+local function onInput(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.A then
+            if not gameProcessed then
+                isTeleportingA = true
+            end
+        elseif input.KeyCode == Enum.KeyCode.D then
+            if not gameProcessed then
+                isTeleportingD = true
+            end
+        elseif input.KeyCode == Enum.KeyCode.W then
+            if not gameProcessed then
+                isTeleportingW = true
+            end
+        elseif input.KeyCode == Enum.KeyCode.K then
+            if not gameProcessed then
+                isScriptRunning = not isScriptRunning
+            end
+        end
+    end
+end
+
+local function onInputEnd(input)
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.A then
+            isTeleportingA = false
+        elseif input.KeyCode == Enum.KeyCode.D then
+            isTeleportingD = false
+        elseif input.KeyCode == Enum.KeyCode.W then
+            isTeleportingW = false
+        end
+    end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(onInput)
+game:GetService("UserInputService").InputEnded:Connect(onInputEnd)
+
+local function onCharacterAdded(char)
+    humanoid = char:WaitForChild("HumanoidRootPart")
+end
+
+player.CharacterAdded:Connect(onCharacterAdded)
+
+while true do
+    if humanoid and isScriptRunning then
+        local moveDirection = Vector3.new()
+        if isTeleportingA then
+            moveDirection = moveDirection - Vector3.new(distance, 0, 0)
+        end
+        if isTeleportingD then
+            moveDirection = moveDirection + Vector3.new(distance, 0, 0)
+        end
+        if isTeleportingW then
+            moveDirection = moveDirection - Vector3.new(0, 0, distance)
+        end
+        humanoid.CFrame = humanoid.CFrame * CFrame.new(moveDirection)
+    end
+    wait()
+end
