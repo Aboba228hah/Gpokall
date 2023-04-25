@@ -2,7 +2,7 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("HumanoidRootPart")
 
-local distance = 2.8
+local distance = 3.55
 
 local isTeleportingA = false
 local isTeleportingD = false
